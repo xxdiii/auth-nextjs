@@ -11,14 +11,7 @@ export async function POST(request: NextRequest){
         const { token } = reqBody
         console.log(token);
 
-        console.log("Current time:", new Date());
-        console.log("Current timestamp:", Date.now());
-
-
         const user = await User.findOne({verifyToken: token,verifyTokenExpiry: { $gt: Date.now() },})
-
-        console.log("User:", user);
-        console.log("Expiry:", user?.verifyTokenExpiry);
 
         if(!user){
             return NextResponse.json({error: "Invalid Token"},{status: 500})

@@ -2,13 +2,9 @@ import nodemailer from 'nodemailer'
 import User from '@/models/userModel'
 import bcrypt from 'bcryptjs'
 
-export const sendEmail = async ({email, emailType, userId, appUrl}: any)=>{
+export const sendEmail = async ({email, emailType, userId}: any)=>{
     try {
         const hashedToken = await bcrypt.hash(userId.toString(),10)
-        const rawDomain = (appUrl ?? process.env.DOMAIN ?? "localhost:3000").replace(/\/$/, "")
-        const normalizedAppUrl = /^https?:\/\//i.test(rawDomain) ? rawDomain : `http://${rawDomain}`
-        const verifyUrl = new URL("/verifyemail", normalizedAppUrl)
-        verifyUrl.searchParams.set("token", hashedToken)
 
         if(emailType === "VERIFY"){
             await User.findByIdAndUpdate(userId,
@@ -36,10 +32,14 @@ export const sendEmail = async ({email, emailType, userId, appUrl}: any)=>{
         });
 
         const mailOptions = {
-            from: "asadithya26@gmail.com",
+            from: 'hitesh@gmail.com',
             to: email,
             subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-            html: `<p>Click <a href="${verifyUrl.toString()}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}</p>`
+            html: emailType === "VERIFY" ? `<p>Click <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">here</a> to verify your email
+            or copy and paste the link below in your browser. <br> ${process.env.DOMAIN}/verifyemail?token=${hashedToken}
+            </p>` : `<p>Click <a href="${process.env.DOMAIN}/reset-password?token=${hashedToken}">here</a> to reset password
+            or copy and paste the link below in your browser. <br> ${process.env.DOMAIN}/reset-password?token=${hashedToken}
+            </p>`
         }
 
         const mailResponse = await transport.sendMail(mailOptions);

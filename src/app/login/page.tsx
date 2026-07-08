@@ -44,15 +44,17 @@ export default function Loginpage(){
             />
             <label htmlFor="password">Password</label>
             <input 
-                className="bg-white text-black p-2 rounded-xl border border-gray-300"
+                className="bg-white text-black p-2 rounded-xl border border-gray-300 mb-4"
                 type="password" 
                 id="password"
                 value={user.password}
                 placeholder="password"
                 onChange={(e)=> setUser({...user,password: e.target.value})}
             />
+            <Link rel="stylesheet" href="/forgot-password" >Forgot password?</Link>
             <button
                 onClick={onLogin}
+                disabled={loading}
                 className="p-2 border border-gray-300 rounded-lg mt-6 mb-3 focus: outline-none focus:border-gray-600 cursor-pointer">
                 {loading ? "Logging In" : "LogIn"}
             </button>

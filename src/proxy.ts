@@ -6,7 +6,7 @@ export function proxy(request: NextRequest) {
   
     const path = request.nextUrl.pathname
 
-    const isPublicPath = path === '/login' || path === '/signup'
+    const isPublicPath = path === '/login' || path === '/signup' || path ==='/verifyemail'
 
     const token = request.cookies.get("token")?.value || ""
 
@@ -17,7 +17,8 @@ export function proxy(request: NextRequest) {
     if(!isPublicPath && !token){
         return NextResponse.redirect(new URL("/login",request.nextUrl))
     }
-    
+
+    return NextResponse.next()
 }
  
 export const config = {
@@ -26,5 +27,6 @@ export const config = {
     '/profile',
     '/login',
     '/signup',
+    '/verifyemail'
   ],
 }
